@@ -21,6 +21,12 @@ variable "georeplication_locations" {
   default     = null
 }
 
+variable "roles" {
+  description = "List of roles that should be assigned to Azure AD object_ids."
+  type = list(object({ object_id = string, role = string }))
+  default = []
+}
+
 variable "tags" {
   description = "Tags to apply to all resources created."
   type        = map(string)

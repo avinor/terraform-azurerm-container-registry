@@ -22,3 +22,10 @@ resource "azurerm_container_registry" "acr" {
 
   tags = var.tags
 }
+
+resource "azurerm_role_assignment" "roles" {
+  count                = length(var.roles)
+  scope                = azurerm_container_registry.acr.id
+  role_definition_name = var.roles[count.index].role
+  principal_id         = var.roles[count.index].object_id
+}
