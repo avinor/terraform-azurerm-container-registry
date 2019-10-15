@@ -15,6 +15,12 @@ variable "sku" {
   default     = "Standard"
 }
 
+variable "content_trust" {
+  description = "Set to true to enable Docker Content Trust on registry."
+  type = bool
+  default     = false
+}
+
 variable "georeplication_locations" {
   description = "A list of Azure locations where the container registry should be geo-replicated."
   type        = list(string)
