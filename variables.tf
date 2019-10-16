@@ -17,7 +17,7 @@ variable "sku" {
 
 variable "content_trust" {
   description = "Set to true to enable Docker Content Trust on registry."
-  type = bool
+  type        = bool
   default     = false
 }
 
@@ -29,8 +29,8 @@ variable "georeplication_locations" {
 
 variable "roles" {
   description = "List of roles that should be assigned to Azure AD object_ids."
-  type = list(object({ object_id = string, role = string }))
-  default = []
+  type        = list(object({ object_id = string, role = string }))
+  default     = []
 }
 
 variable "tags" {

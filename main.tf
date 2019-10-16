@@ -26,7 +26,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 resource "null_resource" "trust" {
-  count = !var.content_trust && var.sku == "Standard" ? 0 : 1
+  count = ! var.content_trust && var.sku == "Standard" ? 0 : 1
 
   triggers = {
     content_trust = var.content_trust
