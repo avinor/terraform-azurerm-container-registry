@@ -29,3 +29,7 @@ inputs {
 ## Roles
 
 Using `roles` input variable it is possible to assign any role to the container registry. It is primarily meant for assigning Acr* roles though, pulling and pushing images.
+
+## Docker Content Trust
+
+[ACR support content trust](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-content-trust) on registries with Premium sku. To enable content trust set variable `content_trust` to true and assign the `AcrImageSigner` role to users that are allowed to sign images.
