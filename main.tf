@@ -1,7 +1,7 @@
 terraform {
   required_version = ">= 0.12.0"
   required_providers {
-    azurerm = ">= 1.32.0"
+    azurerm = "~> 1.36.0"
   }
 }
 
@@ -34,7 +34,7 @@ resource "null_resource" "trust" {
 
   # TODO Use new resource when exists
   provisioner "local-exec" {
-    command = "az acr config content-trust update --registry ${azurerm_container_registry.acr.name} --status ${var.content_trust ? "enabled" : "disabled"} --subscription ${data.azurerm_client_config.current.subscription_id}"
+    command = "az acr config content-trust update --name ${azurerm_container_registry.acr.name} --status ${var.content_trust ? "enabled" : "disabled"} --subscription ${data.azurerm_client_config.current.subscription_id}"
   }
 
   depends_on = ["azurerm_container_registry.acr"]
