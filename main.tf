@@ -1,8 +1,12 @@
 terraform {
-  required_version = ">= 0.12.0"
+  required_version = ">= 0.12.6"
   required_providers {
     azurerm = "~> 1.36.0"
   }
+}
+
+locals {
+  roles_map = { for role in var.roles : "${role.object_id}.${role.role}" => role }
 }
 
 data "azurerm_client_config" "current" {}
@@ -41,8 +45,9 @@ resource "null_resource" "trust" {
 }
 
 resource "azurerm_role_assignment" "roles" {
-  count                = length(var.roles)
+  for_each = local.roles_map
+
   scope                = azurerm_container_registry.acr.id
-  role_definition_name = var.roles[count.index].role
-  principal_id         = var.roles[count.index].object_id
+  role_definition_name = each.value.role
+  principal_id         = each.value.object_id
 }
