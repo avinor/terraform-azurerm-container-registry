@@ -41,7 +41,7 @@ resource "null_resource" "trust" {
     command = "az acr config content-trust update --name ${azurerm_container_registry.acr.name} --status ${var.content_trust ? "enabled" : "disabled"} --subscription ${data.azurerm_client_config.current.subscription_id}"
   }
 
-  depends_on = ["azurerm_container_registry.acr"]
+  depends_on = [azurerm_container_registry.acr]
 }
 
 resource "azurerm_role_assignment" "roles" {
