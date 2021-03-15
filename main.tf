@@ -1,8 +1,10 @@
 terraform {
   required_version = ">= 0.12.6"
-  required_providers {
-    azurerm = "~> 1.44.0"
-  }
+}
+
+provider "azurerm" {
+  version = "~> 2.51.0"
+  features {}
 }
 
 locals {
