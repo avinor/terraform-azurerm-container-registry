@@ -1,7 +1,7 @@
 module "simple" {
-    source = "../../"
+  source = "../../"
 
-    name = "acr"
-    resource_group_name = "simpleacr-rg"
-    location = "westeurope"
+  name                = "acr"
+  resource_group_name = "simpleacr-rg"
+  location            = "westeurope"
 }
