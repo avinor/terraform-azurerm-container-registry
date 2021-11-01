@@ -3,10 +3,10 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.51.0"
+      version = "~> 2.83.0"
     }
     null = {
-      source = "hashicorp/null"
+      source  = "hashicorp/null"
       version = "~> 3.1.0"
     }
   }
@@ -64,7 +64,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 resource "null_resource" "trust" {
-  count = ! var.content_trust && var.sku == "Standard" ? 0 : 1
+  count = !var.content_trust && var.sku == "Standard" ? 0 : 1
 
   triggers = {
     content_trust = var.content_trust
