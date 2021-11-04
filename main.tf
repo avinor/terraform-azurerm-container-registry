@@ -3,10 +3,10 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.51.0"
+      version = "~> 2.83.0"
     }
     null = {
-      source = "hashicorp/null"
+      source  = "hashicorp/null"
       version = "~> 3.1.0"
     }
   }
@@ -53,18 +53,18 @@ resource "azurerm_resource_group" "acr" {
 }
 
 resource "azurerm_container_registry" "acr" {
-  name                     = format("%sregistry", lower(replace(var.name, "/[[:^alnum:]]/", "")))
-  resource_group_name      = azurerm_resource_group.acr.name
-  location                 = azurerm_resource_group.acr.location
-  sku                      = var.sku
-  admin_enabled            = false
-  georeplication_locations = var.georeplication_locations
+  name                = format("%sregistry", lower(replace(var.name, "/[[:^alnum:]]/", "")))
+  resource_group_name = azurerm_resource_group.acr.name
+  location            = azurerm_resource_group.acr.location
+  sku                 = var.sku
+  admin_enabled       = false
+  georeplications     = var.georeplications
 
   tags = var.tags
 }
 
 resource "null_resource" "trust" {
-  count = ! var.content_trust && var.sku == "Standard" ? 0 : 1
+  count = !var.content_trust && var.sku == "Standard" ? 0 : 1
 
   triggers = {
     content_trust = var.content_trust
