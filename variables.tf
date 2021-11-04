@@ -21,9 +21,9 @@ variable "content_trust" {
   default     = false
 }
 
-variable "georeplication_locations" {
+variable "georeplications" {
   description = "A list of Azure locations where the container registry should be geo-replicated."
-  type        = list(string)
+  type        = list(object({ location = string, zone_redundancy_enabled = bool, regional_endpoint_enabled = bool, tags = map(string) }))
   default     = null
 }
 
