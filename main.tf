@@ -3,7 +3,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.83.0"
+      version = "~> 3.28.0"
     }
     null = {
       source  = "hashicorp/null"
@@ -58,7 +58,16 @@ resource "azurerm_container_registry" "acr" {
   location            = azurerm_resource_group.acr.location
   sku                 = var.sku
   admin_enabled       = false
-  georeplications     = var.georeplications
+
+  dynamic "georeplications" {
+    for_each = var.georeplications  != null ? var.georeplications : []
+    content {
+      location                  = georeplications.value["location"]
+      zone_redundancy_enabled   = georeplications.value["zone_redundancy_enabled"]
+      regional_endpoint_enabled = georeplications.value["regional_endpoint_enabled"]
+      tags                      = georeplications.value["tags"]
+    }
+  }
 
   tags = var.tags
 }
@@ -103,7 +112,7 @@ resource "azurerm_monitor_diagnostic_setting" "namespace" {
   # All other categories are created with enabled = false to prevent TF from showing changes happening with each plan/apply.
   # Ref: https://github.com/terraform-providers/terraform-provider-azurerm/issues/7235
   dynamic "log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.default.logs
+    for_each = data.azurerm_monitor_diagnostic_categories.default.log_category_types
     content {
       category = log.value
       enabled  = contains(local.parsed_diag.log, log.value)
