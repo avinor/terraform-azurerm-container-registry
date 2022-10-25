@@ -23,14 +23,22 @@ variable "content_trust" {
 
 variable "georeplications" {
   description = "A list of Azure locations where the container registry should be geo-replicated."
-  type        = list(object({ location = string, zone_redundancy_enabled = bool, regional_endpoint_enabled = bool, tags = map(string) }))
-  default     = null
+  type = list(object({
+    location                  = string,
+    zone_redundancy_enabled   = bool,
+    regional_endpoint_enabled = bool,
+    tags                      = map(string)
+  }))
+  default = null
 }
 
 variable "roles" {
   description = "List of roles that should be assigned to Azure AD object_ids."
-  type        = list(object({ object_id = string, role = string }))
-  default     = []
+  type = list(object({
+    object_id = string,
+    role      = string
+  }))
+  default = []
 }
 
 variable "tags" {
@@ -41,6 +49,11 @@ variable "tags" {
 
 variable "diagnostics" {
   description = "Diagnostic settings for those resources that support it. See README.md for details on configuration."
-  type        = object({ destination = string, eventhub_name = string, logs = list(string), metrics = list(string) })
-  default     = null
+  type = object({
+    destination   = string,
+    eventhub_name = string,
+    logs          = list(string),
+    metrics       = list(string)
+  })
+  default = null
 }

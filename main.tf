@@ -60,7 +60,7 @@ resource "azurerm_container_registry" "acr" {
   admin_enabled       = false
 
   dynamic "georeplications" {
-    for_each = var.georeplications  != null ? var.georeplications : []
+    for_each = var.georeplications != null ? var.georeplications : []
     content {
       location                  = georeplications.value["location"]
       zone_redundancy_enabled   = georeplications.value["zone_redundancy_enabled"]
