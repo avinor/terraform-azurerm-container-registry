@@ -7,9 +7,15 @@ module "georeplication" {
   sku                 = "Premium"
   georeplications = [
     {
-      location                  = "westeurope"
+      location                  = "northeurope"
       zone_redundancy_enabled   = true
       regional_endpoint_enabled = false
+      tags                      = {}
+    },
+    {
+      location                  = "italynorth"
+      zone_redundancy_enabled   = false
+      regional_endpoint_enabled = true
       tags                      = {}
     }
   ]
