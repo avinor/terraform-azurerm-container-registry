@@ -3,7 +3,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.28.0"
+      version = "~> 3.34.0"
     }
     null = {
       source  = "hashicorp/null"
@@ -48,8 +48,7 @@ data "azurerm_client_config" "current" {}
 resource "azurerm_resource_group" "acr" {
   name     = var.resource_group_name
   location = var.location
-
-  tags = var.tags
+  tags     = var.tags
 }
 
 resource "azurerm_container_registry" "acr" {
@@ -58,6 +57,11 @@ resource "azurerm_container_registry" "acr" {
   location            = azurerm_resource_group.acr.location
   sku                 = var.sku
   admin_enabled       = false
+  tags                = var.tags
+
+  trust_policy {
+    enabled = var.content_trust && var.sku == "Premium"
+  }
 
   dynamic "georeplications" {
     for_each = var.georeplications != null ? var.georeplications : []
@@ -68,23 +72,6 @@ resource "azurerm_container_registry" "acr" {
       tags                      = georeplications.value["tags"]
     }
   }
-
-  tags = var.tags
-}
-
-resource "null_resource" "trust" {
-  count = !var.content_trust && var.sku == "Standard" ? 0 : 1
-
-  triggers = {
-    content_trust = var.content_trust
-  }
-
-  # TODO Use new resource when exists
-  provisioner "local-exec" {
-    command = "az acr config content-trust update --name ${azurerm_container_registry.acr.name} --status ${var.content_trust ? "enabled" : "disabled"} --subscription ${data.azurerm_client_config.current.subscription_id}"
-  }
-
-  depends_on = [azurerm_container_registry.acr]
 }
 
 resource "azurerm_role_assignment" "roles" {
@@ -100,7 +87,8 @@ data "azurerm_monitor_diagnostic_categories" "default" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "namespace" {
-  count                          = var.diagnostics != null ? 1 : 0
+  count = var.diagnostics != null ? 1 : 0
+
   name                           = "${var.name}-registry-diag"
   target_resource_id             = azurerm_container_registry.acr.id
   log_analytics_workspace_id     = local.parsed_diag.log_analytics_id

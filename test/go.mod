@@ -2,7 +2,7 @@ module github.com/avinor/terraform-azurerm-container-registry/test
 
 go 1.19
 
-require github.com/gruntwork-io/terratest v0.40.24
+require github.com/gruntwork-io/terratest v0.41.4
 
 require (
 	cloud.google.com/go v0.83.0 // indirect
