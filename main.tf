@@ -3,11 +3,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.34.0"
+      version = "~> 3.95.0"
     }
     null = {
       source  = "hashicorp/null"
-      version = "~> 3.1.0"
+      version = "~> 3.2.2"
     }
   }
 }
@@ -96,35 +96,21 @@ resource "azurerm_monitor_diagnostic_setting" "namespace" {
   eventhub_name                  = local.parsed_diag.event_hub_auth_id != null ? var.diagnostics.eventhub_name : null
   storage_account_id             = local.parsed_diag.storage_account_id
 
-  # For each available log category, check if it should be enabled and set enabled = true if it should.
-  # All other categories are created with enabled = false to prevent TF from showing changes happening with each plan/apply.
-  # Ref: https://github.com/terraform-providers/terraform-provider-azurerm/issues/7235
-  dynamic "log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.default.log_category_types
+  dynamic "enabled_log" {
+    for_each = {
+      for k, v in data.azurerm_monitor_diagnostic_categories.default.log_category_types : k => v
+      if contains(local.parsed_diag.log, "all") || contains(local.parsed_diag.log, v)
+    }
     content {
-      category = log.value
-      enabled  = contains(local.parsed_diag.log, log.value)
-
-      retention_policy {
-        enabled = false
-        days    = 0
-      }
+      category = enabled_log.value
     }
   }
 
-  # For each available metric category, check if it should be enabled and set enabled = true if it should.
-  # All other categories are created with enabled = false to prevent TF from showing changes happening with each plan/apply.
-  # Ref: https://github.com/terraform-providers/terraform-provider-azurerm/issues/7235
   dynamic "metric" {
     for_each = data.azurerm_monitor_diagnostic_categories.default.metrics
     content {
       category = metric.value
       enabled  = contains(local.parsed_diag.metric, metric.value)
-
-      retention_policy {
-        enabled = false
-        days    = 0
-      }
     }
   }
 }
